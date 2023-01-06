@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.cutti.api_diso.data.vo.v1.PersonVO;
+import com.cutti.api_diso.data.vo.v2.PersonVOV2;
 import com.cutti.api_diso.exceptions.ResourceNotFoundException;
 import com.cutti.api_diso.mapper.DozerMapper;
+import com.cutti.api_diso.mapper.PersonMapper;
 import com.cutti.api_diso.model.Person;
 import com.cutti.api_diso.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class PersonServices {
 	
 	@Autowired
 	PersonRepository repository;
+	
+	@Autowired
+	PersonMapper mapper;
 
 	public List<PersonVO> findAll() {
 
@@ -40,6 +45,14 @@ public class PersonServices {
 		logger.info("Creating one person!");
 		var entity = DozerMapper.parseObject(person, Person.class);
 		var vo =  DozerMapper.parseObject(repository.save(entity), PersonVO.class);
+		return vo;
+	}
+	
+	public PersonVOV2 createV2(PersonVOV2 person) {
+		
+		logger.info("Creating one person with V2!");
+		var entity = mapper.convertVoTOEntity(person);
+		var vo =  mapper.convertEntityToVo(repository.save(entity));
 		return vo;
 	}
 	
